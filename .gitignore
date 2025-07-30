@@ -180,3 +180,4 @@ cython_debug/
 # data file
 *.gz
 *.pkl
+cifar-10-batches-py/
