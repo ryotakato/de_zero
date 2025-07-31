@@ -13,8 +13,8 @@ from PIL import Image
 
 
 url_base = 'https://www.cs.toronto.edu/~kriz/'
-file_base = 'cifar-10-python.tar.gz'
-extract_base = 'cifar-10-batches-py'
+file_base = 'cifar-100-python.tar.gz'
+extract_base = 'cifar-100-python'
 
 dataset_dir = os.path.dirname(os.path.abspath(__file__))
 save_file = dataset_dir + "/" + file_base
@@ -26,7 +26,7 @@ img_dim = (1, 32, 32)
 img_size = 1024
 
 
-def download_cifar_10():
+def download_cifar_100():
     file_name = file_base
     file_path = save_file
 
@@ -42,7 +42,7 @@ def download_cifar_10():
     print("Done")
 
 
-def extract_cifar_10():
+def extract_cifar_100():
     file_path = save_file
 
     if not os.path.exists(file_path):
@@ -56,9 +56,9 @@ def extract_cifar_10():
         tar.extractall(path=dataset_dir)
 
 
-def init_cifar_10():
-    download_cifar_10()
-    extract_cifar_10()
+def init_cifar_100():
+    download_cifar_100()
+    extract_cifar_100()
 
     print("Done!")
 
@@ -71,15 +71,15 @@ def unpickle(file):
 
 
 def _change_one_hot_label(X):
-    T = np.zeros((X.size, 10))
+    T = np.zeros((X.size, 100))
     for idx, row in enumerate(T):
         row[X[idx]] = 1
 
     return T
 
 
-def load_cifar_10(normalize=True, flatten=True, one_hot_label=False):
-    """CIFAR-10データセットの読み込み
+def load_cifar_100(normalize=True, flatten=True, one_hot_label=False):
+    """CIFAR-100データセットの読み込み
 
     Parameters
     ----------
@@ -94,18 +94,17 @@ def load_cifar_10(normalize=True, flatten=True, one_hot_label=False):
     (訓練画像, 訓練ラベル), (テスト画像, テストラベル)
     """
     if not os.path.exists(extract_path):
-        init_cifar_10()
+        init_cifar_100()
 
-    dataset = {"train_img": np.empty([0, 3072], dtype=np.int64), "train_label": np.empty([0], dtype=np.int64)}
+    dataset = {}
 
-    for i in range(5):
-        train_data = unpickle(extract_path + "/data_batch_" + str(i+1))
-        dataset["train_img"] = np.r_[dataset["train_img"], train_data[b"data"]]
-        dataset["train_label"] = np.r_[dataset["train_label"], np.array(train_data[b"labels"])]
+    train_data = unpickle(extract_path + "/train")
+    dataset["train_img"] = train_data[b"data"]
+    dataset["train_label"] = np.array(train_data[b"fine_labels"])
 
-    test_data = unpickle(extract_path + "/test_batch")
+    test_data = unpickle(extract_path + "/test")
     dataset["test_img"] = test_data[b"data"]
-    dataset["test_label"] = np.array(test_data[b"labels"])
+    dataset["test_label"] = np.array(test_data[b"fine_labels"])
 
 
 
@@ -127,4 +126,4 @@ def load_cifar_10(normalize=True, flatten=True, one_hot_label=False):
 
 
 if __name__ == '__main__':
-    init_cifar_10()
+    init_cifar_100()
