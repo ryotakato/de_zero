@@ -15,6 +15,7 @@ start = time.time()
 
 # parameter
 iters_num = 100000
+#iters_num = 25000
 train_size = x_train.shape[0]
 batch_size = 100
 
@@ -27,7 +28,8 @@ iter_per_epoch = max(train_size / batch_size, 1)
 
 
 networks = {
-            "chap06+AdaGrad+weight init he+batchnorm+hidden100,100,50:": {"network":MultiLayerNetExtend(input_size=3072, hidden_size_list=[100,100,50], output_size=10, weight_init_std="sigmoid", use_dropout=False, use_batchnorm=True), "optimizer": AdaGrad()},
+        #"chap06+AdaGrad+weight init he+batchnorm+hidden100,100,50:": {"network":MultiLayerNetExtend(input_size=3072, hidden_size_list=[100,100,50], output_size=10, weight_init_std="sigmoid", use_dropout=False, use_batchnorm=True, weight_decay_lambda=0.1), "optimizer": AdaGrad()},
+            "chap06+AdaGrad+weight init he+batchnorm+hidden100,100,50:": {"network":MultiLayerNetExtend(input_size=3072, hidden_size_list=[100,100,50], output_size=10, weight_init_std="relu", use_dropout=True, use_batchnorm=True, dropout_ration=0.5, weight_decay_lambda=0.01), "optimizer": AdaGrad()},
             }
 
 for key, classes in networks.items():
@@ -57,11 +59,12 @@ for key, classes in networks.items():
     
         # calculate accuracy per epoch
         if i % iter_per_epoch == 0:
+            epoch = int(i / iter_per_epoch)
             train_acc = network.accuracy(x_train, t_train)
             test_acc = network.accuracy(x_test, t_test)
             train_acc_list.append(train_acc)
             test_acc_list.append(test_acc)
-            print(f'Iter : {i:06} | train acc, test acc | {train_acc}, {test_acc}')
+            print(f'Epoch: {epoch:03}, Iter: {i:06} | train acc, test acc | {train_acc}, {test_acc}')
     
     train_acc = network.accuracy(x_train, t_train)
     test_acc = network.accuracy(x_test, t_test)
