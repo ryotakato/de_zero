@@ -6,6 +6,7 @@ from collections import OrderedDict
 
 import numpy as np
 
+
 class SimpleConvNet:
 
     """畳み込みCNN

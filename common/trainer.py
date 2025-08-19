@@ -28,7 +28,7 @@ class Trainer:
         self.train_size = x_train.shape[0]
         self.iter_per_epoch = max(self.train_size / mini_batch_size, 1)
         self.max_iter = int(epochs * self.iter_per_epoch)
-        self.current_iter = 0
+        self.current_iter = 1
         self.current_epoch = 0
 
         self.train_loss_list = []

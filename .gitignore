@@ -182,3 +182,4 @@ cython_debug/
 *.pkl
 cifar-10-batches-py/
 cifar-100-python/
+dataset/img/
